@@ -1,5 +1,6 @@
 package mg.management.employee.endpoint.controller;
 
+import com.lowagie.text.DocumentException;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -7,12 +8,12 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import mg.management.employee.CompanyConf;
 import mg.management.employee.endpoint.mapper.EmployeeMapper;
 import mg.management.employee.endpoint.mapper.PhoneMapper;
@@ -22,6 +23,8 @@ import mg.management.employee.model.Employee;
 import mg.management.employee.model.Phone;
 import mg.management.employee.service.EmployeeService;
 import mg.management.employee.service.PhoneService;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +42,7 @@ public class EmployeeController {
   private final PhoneService phoneService;
   private final PhoneMapper phoneMapper;
   private final CompanyConf conf;
+
   @GetMapping("/employees")
   public String getEmployees(Model model) {
     List<Employee> employees = service.getEmployees().stream()
@@ -105,6 +109,17 @@ public class EmployeeController {
         .map(phoneMapper::toEntity)
         .toList());
     return "redirect:/employees";
+  }
+
+  @GetMapping(value = "/card", produces = MediaType.APPLICATION_PDF_VALUE)
+  public ResponseEntity<byte[]> getEmployeeCard(@RequestParam("id") String employeeId, HttpServletResponse response) throws IOException, DocumentException {
+    byte[] contents = service.generateCard(employeeId);
+
+    OutputStream os = response.getOutputStream();
+    os.write(contents);
+    os.flush();
+
+    return ResponseEntity.ok(contents);
   }
 
   @PostMapping("/csv")

@@ -1,8 +1,12 @@
 package mg.management.employee.service;
 
+import com.lowagie.text.DocumentException;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import mg.management.employee.CompanyConf;
+import mg.management.employee.endpoint.mapper.EmployeeMapper;
 import mg.management.employee.repository.EmployeeRepository;
 import mg.management.employee.repository.criteria.DateRangeCriteria;
 import mg.management.employee.repository.entity.Employee;
@@ -16,13 +20,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
+import static mg.management.employee.service.util.DataFormatterUtils.getAge;
 import static mg.management.employee.service.util.OrderUtils.paginate;
+import static mg.management.employee.service.util.PdfUtils.generatePdf;
+import static mg.management.employee.service.util.TemplateUtils.htmlToString;
 
 @Service
 @AllArgsConstructor
 public class EmployeeService {
   private final EmployeeRepository repository;
+  private final CompanyConf conf;
+  private final EmployeeMapper mapper;
 
   public Employee getById(String id) {
     return repository.findById(id).orElseThrow();
@@ -58,6 +68,27 @@ public class EmployeeService {
   @Transactional
   public Employee createEmployee(Employee toCreate) {
     return repository.save(toCreate);
+  }
+
+  private Context getEmployeeCardContext(mg.management.employee.model.Employee employee, CompanyConf conf) {
+    Context initial = new Context();
+    initial.setVariable("profile", employee.image());
+    initial.setVariable("matricule", employee.registrationNumber());
+    initial.setVariable("nom", employee.lastName());
+    initial.setVariable("prénoms", employee.firstName());
+    initial.setVariable("âge", getAge(employee.birthDate()));
+    initial.setVariable("embauche", employee.startedAt());
+    initial.setVariable("départ", employee.departedAt());
+    initial.setVariable("cnaps", employee.cnaps());
+    initial.setVariable("salaire", employee.grossSalary());
+    initial.setVariable("entreprise", conf);
+    return initial;
+  }
+
+  public byte[] generateCard(String employeeId) throws IOException, DocumentException {
+    Employee toGenerate = repository.findById(employeeId).orElseThrow();
+    String cardContent = htmlToString("employee-card", getEmployeeCardContext(mapper.toView(toGenerate, null), conf));
+    return generatePdf(cardContent);
   }
 
 }

@@ -1,18 +1,36 @@
 package mg.management.employee.service.util;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Locale;
 import org.springframework.web.multipart.MultipartFile;
 
 public class DataFormatterUtils {
   private DataFormatterUtils() {
 
+  }
+
+  public static int getAge(String birthdate) {
+    SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
+    try {
+      Date date = formatter.parse(birthdate);
+      LocalDate birthLocalDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
+      LocalDate currentLocalDate = LocalDate.now();
+      Period period = Period.between(birthLocalDate, currentLocalDate);
+      return period.getYears();
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return 0;
   }
 
   public static Instant stringToInstant(String str) {
