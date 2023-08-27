@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns="http://www.w3.org/1999/html"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Employee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" th:src="@{/js/create.js}" defer></script>
+  </head>
+  <body class="bg-[#EFEFF0] min-h-screen overflow-auto">
+    <header
+      class="w-full flex flex-row justify-end items-center p-3 z-9999 sticky top-0"
+    >
+      <img
+        class="w-8 h-8 rounded-full"
+        th:src="${conf.getLogo()}"
+        alt="logo société"
+      />
+      <h1 class="text-blue-500 text-xl" th:text="${conf.getName()}"></h1>
+    </header>
+    <main class="relative w-full flex justify-center">
+      <form
+        class="bg-white px-8 pt-6 pb-8 mb-4"
+        action="#"
+        th:action="@{/save}"
+        th:object="${employee}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <div
+          id="profile"
+          class="mx-auto relative object-cover w-28 h-32 bg-white border border-gray-300 rounded shadow hover:bg-gray-100"
+        >
+          <label
+            id="profile-pic-label"
+            for="profile-pic-upload"
+            class="absolute w-full border border-gray-300 text-center text-gray-700 h-full flex justify-center items-center z-999"
+            >Ajouter une photo</label
+          >
+          <input
+            type="file"
+            id="profile-pic-upload"
+            th:field="*{image}"
+            class="none"
+            hidden
+            onchange="loadFile(event)"
+          />
+          <img
+            id="profile-pic-preview"
+            style="display: none"
+            class="w-full h-full"
+          />
+        </div>
+        <div
+          class="my-4 py-4 flex flex-row justify-center gap-10 items-center w-full"
+        >
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="lastname"
+            type="text"
+            placeholder="Nom"
+            th:field="*{lastName}"
+          />
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="firstname"
+            type="text"
+            placeholder="Prénom(s)"
+            th:field="*{firstName}"
+          />
+        </div>
+        <div
+          class="my-4 py-4 flex flex-row justify-center gap-10 items-center w-full"
+        >
+          <input
+            type="date"
+            class="shadow appearance-none w-2/4 py-2 px-3 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Date de naissance"
+            th:field="*{birthDate}"
+          />
+          <select
+            th:field="*{gender}"
+            id="gender"
+            class="shadow appearance-none bg-white w-2/4 py-2 px-3 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="g">Sexe</option>
+            <option th:value="M" value="M" th:text="Homme" selected>
+              Homme
+            </option>
+            <option th:value="F" value="M" th:text="Femme">Femme</option>
+          </select>
+        </div>
+        <div class="my-4">
+          <input
+            th:field="*{address}"
+            type="text"
+            id="address"
+            placeholder="Adresse"
+            class="shadow py-2.5 px-2 appearance-none w-full border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <label class="block my-6 text-xl text-center font-medium text-gray-900"
+          >Email</label
+        >
+        <div class="w-full flex justify-center items-center">
+          <input
+            type="text"
+            placeholder="Email"
+            th:field="*{email}"
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <label class="block my-6 text-xl text-center font-medium text-gray-900"
+          >Numéro</label
+        >
+        <div>
+          <input
+            type="text"
+            th:field="*{code}"
+            class="shadow py-2.5 px-2 appearance-none w-20 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Code"
+          />
+          <input
+            type="text"
+            th:field="*{value}"
+            placeholder="Valeur"
+            class="shadow py-2.5 px-2 appearance-none w-2/4 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <label class="block my-6 text-xl text-center font-medium text-gray-900"
+          >Identité</label
+        >
+        <div
+          class="my-4 py-4 flex flex-row justify-center gap-10 items-center w-full"
+        >
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="serial"
+            type="text"
+            placeholder="Numéro de série"
+            th:field="*{serial}"
+          />
+          <input
+            type="date"
+            class="shadow appearance-none w-2/4 py-2 px-3 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Delivré le"
+            th:field="*{deliveredAt}"
+          />
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="deliveredIn"
+            type="text"
+            placeholder="Lieu de délivrance"
+            th:field="*{deliveredIn}"
+          />
+        </div>
+        <label class="block my-6 text-xl text-center font-medium text-gray-900"
+          >Société</label
+        >
+        <div
+          class="my-4 py-4 flex flex-row justify-center gap-10 items-center w-full"
+        >
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="position"
+            type="text"
+            placeholder="Poste"
+            th:field="*{position}"
+          />
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="children"
+            min="0"
+            type="number"
+            placeholder="Nombre d'enfants"
+            th:field="*{children}"
+          />
+        </div>
+        <div
+          class="my-4 py-4 flex flex-row justify-center gap-10 items-center w-full"
+        >
+          <select
+            id="category"
+            th:field="*{category}"
+            class="shadow appearance-none bg-white w-2/4 py-2 px-3 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="dummy" disabled>Catégorie</option>
+            <option th:value="C1" value="C1">C1</option>
+            <option th:valuevalue="C2" value="C2">C2</option>
+            <option th:valuevalue="C3" value="C3">C3</option>
+            <option th:value="C4" value="C4">C4</option>
+            <option th:value="C5" value="C5">C5</option>
+          </select>
+          <input
+            class="shadow appearance-none border border-gray-300 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="cnaps"
+            type="text"
+            placeholder="CNAPS"
+            th:field="*{cnaps}"
+          />
+        </div>
+        <div
+          class="my-4 py-4 flex flex-row justify-center gap-10 items-center w-full"
+        >
+          <input
+            type="date"
+            class="shadow appearance-none w-2/4 py-2 px-3 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Date d'embauche"
+            th:field="*{startedAt}"
+          />
+          <input
+            type="date"
+            class="shadow appearance-none w-2/4 py-2 px-3 border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Date de départ"
+            th:field="*{departedAt}"
+          />
+        </div>
+        <div class="my-4">
+          <input
+            th:field="*{grossSalary}"
+            type="number"
+            id="salary"
+            placeholder="Salaire brut"
+            class="shadow py-2.5 px-2 appearance-none w-full border border-gray-300 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <a
+            class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            th:href="@{/employees}"
+          >
+            Annuler
+          </a>
+          <button
+            class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Créer
+          </button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

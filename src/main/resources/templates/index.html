@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" th:src="@{/js/index.js}" defer></script>
+  </head>
+  <body class="bg-[#EFEFF0] min-h-screen overflow-auto">
+    <header
+      class="w-full flex flex-row justify-end items-center p-3 z-9999 sticky top-0"
+    >
+      <img
+        class="w-8 h-8 rounded-full"
+        th:src="${conf.getLogo()}"
+        alt="logo société"
+      />
+      <h1 class="text-blue-500 text-xl" th:text="${conf.getName()}"></h1>
+    </header>
+    <main class="w-full flex flex-col items-center">
+      <h2 class="text-gray-700 uppercase text-[55px] my-20">
+        Gestion d'employée
+      </h2>
+      <button
+        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-[30px] py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onclick="redirectToEmployees()"
+      >
+        Suivant
+      </button>
+    </main>
+  </body>
+</html>

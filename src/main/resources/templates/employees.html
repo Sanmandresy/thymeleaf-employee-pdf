@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" th:src="@{/js/index.js}" defer></script>
+  </head>
+  <body class="bg-[#EFEFF0] min-h-screen overflow-auto">
+    <header
+      class="w-full flex flex-row justify-end items-center p-3 z-9999 sticky top-0"
+    >
+      <img
+        class="w-8 h-8 rounded-full"
+        th:src="${conf.getLogo()}"
+        alt="logo société"
+      />
+      <h1 class="text-blue-500 text-xl" th:text="${conf.getName()}"></h1>
+    </header>
+    <main class="relative overflow-x-auto mx-3 my-10">
+      <form
+        class="w-full flex flex-row gap-5 justify-between items-center"
+        th:action="@{/employees/filter}"
+        method="get"
+      >
+        <div class="flex flex-col gap-5">
+          <div class="w-full flex flex-row gap-5">
+            <input
+              class="shadow appearance-none w-40 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="lastname"
+              type="text"
+              placeholder="Filtrer par nom"
+              name="lastName"
+              th:name="lastName"
+            />
+            <input
+              class="shadow appearance-none w-40 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="firstName"
+              type="text"
+              placeholder="Filtrer par prénom"
+              name="firstName"
+              th:name="firstName"
+            />
+            <select
+              name="gender"
+              th:name="gender"
+              class="shadow appearance-none bg-white w-20 py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+              <option value="" class="text-gray-700">Sexe</option>
+              <option th:value="M" value="M" th:text="Homme">Homme</option>
+              <option th:value="F" value="F" th:text="Femme">Femme</option>
+            </select>
+            <input
+              class="shadow appearance-none w-32 rounded w-2/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="position"
+              type="text"
+              placeholder="Position"
+              name="position"
+              th:name="position"
+            />
+            <input
+              class="shadow appearance-none w-52 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="code"
+              type="text"
+              placeholder="Filtrer par code téléphone"
+              name="code"
+              th:name="code"
+            />
+            <input
+              class="shadow appearance-none w-20 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="page"
+              type="number"
+              placeholder="Page"
+              name="page"
+              th:name="page"
+            />
+            <input
+              class="shadow appearance-none w-52 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="pageSize"
+              type="number"
+              placeholder="Nombre d'éléments"
+              name="pageSize"
+              th:name="pageSize"
+            />
+          </div>
+          <div class="w-full flex flex-row gap-5">
+            <input
+              type="date"
+              class="shadow appearance-none py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Début"
+              name="start"
+              th:name="start"
+            />
+            <select
+              name="field"
+              th:name="field"
+              class="shadow appearance-none bg-white w-40 py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+              <option value="" class="text-gray-700">Date</option>
+              <option th:value="startedAt" value="startedAt" th:text="Embauche">
+                Date d'embauche
+              </option>
+              <option th:value="departedAt" value="departedAt" th:text="Départ">
+                Date de départ
+              </option>
+            </select>
+            <input
+              type="date"
+              class="shadow appearance-none py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Fin"
+              name="end"
+              th:name="end"
+            />
+            <select
+              name="order"
+              th:name="order"
+              class="shadow appearance-none bg-white w-40 py-2 px-3 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+              <option value="o" disabled>Ordre</option>
+              <option th:value="asc" value="asc" th:text="ASC">ASC</option>
+              <option th:value="desc" value="desc" th:text="DESC">DESC</option>
+            </select>
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Chercher
+        </button>
+      </form>
+    </main>
+    <table class="w-full mt-2">
+      <thead class="text-xs text-gray-700 uppercase">
+        <tr>
+          <th scope="col" class="px-2 py-3">Matricule</th>
+          <th scope="col" class="px-3 py-3">Photo</th>
+          <th scope="col" class="px-3 py-3">Nom Complet</th>
+          <th scope="col" class="px-3 py-3">Date de naissance</th>
+          <th scope="col" class="px-1 py-3">Sexe</th>
+          <th scope="col" class="px-3 py-3">Poste</th>
+          <th scope="col" class="px-3 py-3">Date d'embauche</th>
+          <th scope="col" class="px-3 py-3">Date de départ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="employee-row w-full text-center bg-white"
+          th:each="employee : ${employees}"
+          th:data-name="${employee.id}"
+          th:onclick="redirectToEmployee(this.getAttribute('data-name'))"
+        >
+          <td
+            class="px-2 py-4 font-medium text-[#777] whitespace-nowrap"
+            th:text="${employee.registrationNumber}"
+          ></td>
+          <td class="px-2 py-4 font-medium text-[#777] whitespace-nowrap">
+            <div th:if="${employee.image == null || employee.image == ''}">
+              Aucune image
+            </div>
+            <img
+              th:if="${employee.image != null && employee.image != ''}"
+              class="w-8 h-8"
+              src="#"
+              th:src="@{'data:image/jpeg;base64,' + ${employee.image}}"
+              alt="Employee Image"
+            />
+          </td>
+          <td class="px-2 py-4 font-medium text-[#007bff] whitespace-nowrap">
+            <p th:text="${employee.lastName}"></p>
+            <p th:text="${employee.firstName}"></p>
+          </td>
+          <td
+            class="px-2 py-4 font-medium text-[#777] whitespace-nowrap"
+            th:text="${employee.birthDate}"
+          ></td>
+          <td
+            class="px-2 py-4 font-medium text-[#777] whitespace-nowrap"
+            th:text="${employee.gender}"
+          ></td>
+          <td
+            class="px-2 py-4 font-medium text-[#777] whitespace-nowrap"
+            th:text="${employee.position}"
+          ></td>
+          <td
+            class="px-2 py-4 font-medium text-[#777] whitespace-nowrap"
+            th:text="${employee.startedAt}"
+          ></td>
+          <td
+            class="px-2 py-4 font-medium text-[#777] whitespace-nowrap"
+            th:text="${employee.departedAt}"
+          ></td>
+        </tr>
+      </tbody>
+    </table>
+    <footer class="w-full my-5 px-4 flex flex-row justify-between items-center">
+      <a
+        th:href="@{/add-employee}"
+        type="button"
+        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+      >
+        Nouvel employé
+      </a>
+
+      <form id="csv-form" th:action="@{/csv}" method="post">
+        <input
+          type="hidden"
+          id="employeeIds"
+          name="employeeIds"
+          th:value="${employeeIds}"
+        />
+      </form>
+      <button
+        onclick="exportToCSV()"
+        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+      >
+        Exporter en csv
+      </button>
+    </footer>
+  </body>
+</html>
