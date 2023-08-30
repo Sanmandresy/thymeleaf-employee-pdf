@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" th:src="@{/js/one.js}" defer></script>
+  </head>
+  <body class="bg-[#EFEFF0] min-h-screen overflow-auto">
+    <main class="w-full flex flex-row">
+      <div class="w-2/4 h-72 flex justify-center items-center">
+        <img
+          src="#"
+          th:src="@{'data:image/jpeg;base64,' + ${employee.image()}}"
+          alt="profile"
+          class="w-40 h-40 shadow-md bg-white shadow-black"
+        />
+      </div>
+      <div class="w-2/4 my-2 flex flex-col bg-white shadow-md shadow-black">
+        <div
+          class="py-5 mx-3 my-3 text-center text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+        >
+          <h3 class="text-2xl font-bold">
+            <span th:text="${employee.lastName()}"></span>
+            <span th:text="${employee.firstName()}"></span>
+          </h3>
+          <span th:text="${employee.position()}"></span>
+        </div>
+        <ul class="mx-3">
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Date de naissance:</span
+            >
+            <span th:text="${employee.birthDate()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Sexe:</span
+            >
+            <span th:text="${employee.gender()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Adresse:</span
+            >
+            <span th:text="${employee.address()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Email:</span
+            >
+            <span th:text="${employee.email()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Téléphone:</span
+            >
+          </li>
+
+          <li th:each="phone : ${employee.phones()}">
+            <span th:text="${phone.code()}"></span>
+            <span th:text="${phone.value()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >CIN:</span
+            >
+            <span th:text="${employee.identity()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Catégorie:</span
+            >
+            <span th:text="${employee.category()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Cnaps:</span
+            >
+            <span th:text="${employee.cnaps()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Date d'embauche:</span
+            >
+            <span th:text="${employee.startedAt()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Date de départ:</span
+            >
+            <span th:text="${employee.departedAt()}"></span>
+          </li>
+          <li>
+            <span
+              class="text-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent"
+              >Salaire brut:</span
+            >
+            <span th:text="${employee.grossSalary()}"></span>
+          </li>
+        </ul>
+      </div>
+    </main>
+    <button
+      th:data-name="${employee.id()}"
+      th:onclick="printEmployeeCard(this.getAttribute('data-name'))"
+      class="ml-[45%] mt-12 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-[30px] py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    >
+      Imprimer
+    </button>
+  </body>
+</html>

@@ -112,13 +112,8 @@ public class EmployeeController {
   }
 
   @GetMapping(value = "/card", produces = MediaType.APPLICATION_PDF_VALUE)
-  public ResponseEntity<byte[]> getEmployeeCard(@RequestParam("id") String employeeId, HttpServletResponse response) throws IOException, DocumentException {
+  public ResponseEntity<byte[]> getEmployeeCard(@RequestParam("id") String employeeId) throws IOException, DocumentException {
     byte[] contents = service.generateCard(employeeId);
-
-    OutputStream os = response.getOutputStream();
-    os.write(contents);
-    os.flush();
-
     return ResponseEntity.ok(contents);
   }
 
