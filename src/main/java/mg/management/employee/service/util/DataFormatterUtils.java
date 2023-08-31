@@ -12,21 +12,31 @@ import java.time.format.FormatStyle;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Locale;
+import mg.management.employee.model.AgeCriteria;
 import org.springframework.web.multipart.MultipartFile;
+
+import static mg.management.employee.model.AgeCriteria.BIRTHDAY;
+import static mg.management.employee.model.AgeCriteria.YEAR_ONLY;
 
 public class DataFormatterUtils {
   private DataFormatterUtils() {
 
   }
 
-  public static int getAge(String birthdate) {
+  public static int getAge(String birthdate, AgeCriteria criteria) {
     SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
     try {
       Date date = formatter.parse(birthdate);
       LocalDate birthLocalDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
       LocalDate currentLocalDate = LocalDate.now();
       Period period = Period.between(birthLocalDate, currentLocalDate);
+      if (criteria == BIRTHDAY) {
+        return period.getYears();
+      } else if (criteria == YEAR_ONLY) {
+        return currentLocalDate.getYear() - birthLocalDate.getYear();
+      }
       return period.getYears();
+
     } catch (ParseException e) {
       e.printStackTrace();
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import mg.management.employee.CompanyConf;
 import mg.management.employee.endpoint.mapper.EmployeeMapper;
+import mg.management.employee.model.AgeCriteria;
 import mg.management.employee.repository.EmployeeRepository;
 import mg.management.employee.repository.criteria.DateRangeCriteria;
 import mg.management.employee.repository.entity.Employee;
@@ -70,13 +71,13 @@ public class EmployeeService {
     return repository.save(toCreate);
   }
 
-  private Context getEmployeeCardContext(mg.management.employee.model.Employee employee, CompanyConf conf) {
+  private Context getEmployeeCardContext(mg.management.employee.model.Employee employee, CompanyConf conf, AgeCriteria criteria) {
     Context initial = new Context();
     initial.setVariable("profile", employee.image());
     initial.setVariable("matricule", employee.registrationNumber());
     initial.setVariable("nom", employee.lastName());
     initial.setVariable("prénoms", employee.firstName());
-    initial.setVariable("âge", getAge(employee.birthDate()));
+    initial.setVariable("âge", getAge(employee.birthDate(), criteria));
     initial.setVariable("embauche", employee.startedAt());
     initial.setVariable("départ", employee.departedAt());
     initial.setVariable("cnaps", employee.cnaps());
@@ -85,9 +86,9 @@ public class EmployeeService {
     return initial;
   }
 
-  public byte[] generateCard(String employeeId) throws IOException, DocumentException {
+  public byte[] generateCard(String employeeId, AgeCriteria criteria) throws IOException, DocumentException {
     Employee toGenerate = repository.findById(employeeId).orElseThrow();
-    String cardContent = htmlToString("employee-card", getEmployeeCardContext(mapper.toView(toGenerate, null), conf));
+    String cardContent = htmlToString("employee-card", getEmployeeCardContext(mapper.toView(toGenerate, null), conf, criteria));
     return generatePdf(cardContent);
   }
 

@@ -8,7 +8,6 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +16,7 @@ import lombok.AllArgsConstructor;
 import mg.management.employee.CompanyConf;
 import mg.management.employee.endpoint.mapper.EmployeeMapper;
 import mg.management.employee.endpoint.mapper.PhoneMapper;
+import mg.management.employee.model.AgeCriteria;
 import mg.management.employee.model.CreateEmployee;
 import mg.management.employee.model.CsvEmployee;
 import mg.management.employee.model.Employee;
@@ -112,8 +112,8 @@ public class EmployeeController {
   }
 
   @GetMapping(value = "/card", produces = MediaType.APPLICATION_PDF_VALUE)
-  public ResponseEntity<byte[]> getEmployeeCard(@RequestParam("id") String employeeId) throws IOException, DocumentException {
-    byte[] contents = service.generateCard(employeeId);
+  public ResponseEntity<byte[]> getEmployeeCard(@RequestParam("id") String employeeId, @RequestParam(value = "age_criteria", required = false) AgeCriteria criteria) throws IOException, DocumentException {
+    byte[] contents = service.generateCard(employeeId, criteria);
     return ResponseEntity.ok(contents);
   }
 
